@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Kill any previous ngrok tunnels still running
+if [[ $(pgrep ngrok) ]]; then
+  killitem ngrok
+fi
+
+# Open personal ngrok in the background
+$HOME/ngrok http 5000 > /dev/null &
+
+## Eventually do something else with the argument passed in
+if [[ -z $1 ]]; then
+  # Pause to allow the ngrok tunnel to open
+  sleep 1.5
+
+  ### https://gist.github.com/rjz/af40158c529d7c407420fc0de490758b ###
+  # GET tunnels, access [https, http] 0th by public_url property
+  HOST=$(curl -s --ipv4 localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
+
+  echo $HOST
+
+  osascript -e "tell application \"Messages\" to send \"$HOST\" to buddy \"$PHONE\""
+fi
