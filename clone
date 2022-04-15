@@ -1,0 +1,26 @@
+#!/bin/bash
+
+REPO=""
+NEW=""
+USER=rhammock1 # default to mine, but allow it to be passed in
+
+while test $# -gt 0
+do
+    case "$1" in
+        --user | -u) USER=$2
+            ;;
+        --repo | -r) REPO=$2
+            ;;
+	--new | -n) NEW=$2
+	    ;;
+	--help | -h) cat ~/scripts/bin/clone_help.txt
+	    exit 0
+	    ;;
+        --*) echo "No such option: $1"
+            exit 0
+            ;;
+    esac
+    shift
+done
+
+git clone "https://github.com/$USER/$REPO.git" $NEW

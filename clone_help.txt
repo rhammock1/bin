@@ -1,0 +1,11 @@
+Usage: [--help | -h] [--user | -u] [--repo | -r] [--new | -n]
+    --help | -h
+        Show this dialogue obvi
+    --user | -u
+        Specify the user whose repo will be cloned. Defaults to me
+    --repo | -r
+        [required] Specify the repo to clone
+    --new | -n
+        The name or file path to where the repo will be cloned to.
+        If file path is specified, you must also include new folder name
+        

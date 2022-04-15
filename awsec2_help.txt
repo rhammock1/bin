@@ -1,0 +1,10 @@
+ Usage: [--help | -h] [function]
+    --help | -h
+        Show this text obvi
+    [function]
+      getpublic
+        echos the Public DNS name of the ec2 instance
+      start
+        start the instance
+      stop 
+        stop the instance

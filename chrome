@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ~/google-chrome
+bash google-chrome-stable.sh

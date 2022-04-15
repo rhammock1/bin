@@ -1,0 +1,24 @@
+#!/bin/bash
+
+CMD=$1
+ID=$(aws ec2 describe-instances | jq -r '.Reservations[0].Instances[0].InstanceId')
+PUBLIC=$(aws ec2 describe-instances | jq -r '.Reservations[0].Instances[0].PublicDnsName')
+
+getpublic() {
+  echo $PUBLIC
+}
+
+stop() {
+  echo "Stopping instance..."
+  aws ec2 stop-instances --instance-ids $ID
+}
+
+start() {
+  echo "Starting instance..."
+  aws ec2 start-instances --instance-ids $ID
+  echo -n "Pending..."
+  sleep 1
+  echo "PUBLIC DNS NAME: $PUBLIC"
+}
+
+$CMD

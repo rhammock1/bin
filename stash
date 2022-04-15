@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [[ $1 == '-h' || $1 == '--help' ]]; then
+  echo 'Usage:'
+  echo '  stash'
+  echo '  stash -p'
+  echo '  stash --pop'
+  echo 'Explain:'
+  echo '  Use within a git repository with changes that need to be stashed'
+  echo '  The -p or --pop flag will pop the most recent stash'
+  exit
+elif [[ $1 == '-p' || $1 == '--pop' ]]; then
+  echo "Popping most recent stash"
+  git stash pop
+  exit
+fi
+
+if [[ `git status --porcelain` ]]; then
+  # stash existing changes
+  git stash -m "WIP auto stashed via stash script"
+else
+  echo "No changes to stash..."
+fi
+

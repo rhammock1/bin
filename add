@@ -1,0 +1,5 @@
+#!/bin/bash
+
+add() { pacman -Syu $1; }
+
+add $1

@@ -1,0 +1,21 @@
+# kills process on port
+killport () {
+  lsof -ti tcp:$1 | xargs kill
+}
+
+# kills process by keyword
+killword() {
+  kill -9 `pgrep -f $1`
+}
+
+REGEX='^[0-9]+$'
+
+if [[ -z $1 ]]; then
+  echo "Must supply either port or keyword of process to kill"
+elif [[ $1 =~ $REGEX ]]; then
+  echo "Killing process running on port $1"
+  killport $1
+else
+  echo "Killing process with keyword $1"
+  killword $1
+fi
