@@ -7,3 +7,4 @@ Has Manjaro and Mac commands
 * jq
 * google-chrome (from github repo saved in $HOME dir)
 * aws cli
+* ngrok
