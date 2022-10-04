@@ -1,5 +1,7 @@
 #!/bin/bash
 
+CURRENT_BRANCH=$(git branch --show-current)
+
 if [[ $1 == '-h' || $1 == '--help' ]]; then
   echo 'Usage:'
   echo '  stash'
@@ -7,11 +9,12 @@ if [[ $1 == '-h' || $1 == '--help' ]]; then
   echo '  stash --pop'
   echo 'Explain:'
   echo '  Use within a git repository with changes that need to be stashed'
-  echo '  The -p or --pop flag will pop the most recent stash'
+  echo '  The -p or --pop flag will pop the most recent stash associated with the current branch'
   exit
 elif [[ $1 == '-p' || $1 == '--pop' ]]; then
-  echo "Popping most recent stash"
-  git stash pop
+  echo "Popping stash for branch $CURRENT_BRANCH"
+  STASH=$(git stash list | grep "$CURRENT_BRANCH" | head -n 1 | cut -d ':' -f 1)
+  git stash pop $STASH
   exit
 fi
 
@@ -21,4 +24,3 @@ if [[ `git status --porcelain` ]]; then
 else
   echo "No changes to stash..."
 fi
-
