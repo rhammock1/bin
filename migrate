@@ -1,0 +1,62 @@
+#!/bin/bash
+
+MIGRATION=$1
+DATABASE='node_env_1'
+DIRECTORY='gotab/node/db/db_migrate'
+FORCE=false # doesn't actually do anything yet
+SKIP=false # skip the migration and just update db_versions
+
+if test ! $MIGRATION ; then
+  echo 'Usage:'
+  echo '  migrate MIGRATION NUMBER'
+  echo 'Examples:'
+  echo '  migrate 123'
+  echo '  migrate 124 --database a_database_name'
+  echo '  migrate 125 --no-run'
+  exit
+fi
+
+while test $# -gt 0
+do
+    case "$1" in
+        --database | -d) DATABASE="$2"
+            ;;
+        --directory) DIRECTORY="$2"
+            ;;
+        --force | -f) FORCE=true
+            ;;
+        --no-run | -n) SKIP=true
+            ;;
+        --*) echo "No such option: $1"
+            ;;
+    esac
+    shift
+done
+
+if ! [[ "$MIGRATION" =~ ^[0-9]+$ ]]; then
+  echo "Migration must be an integer"
+  exit 1
+fi
+
+echo "Migrating database $DATABASE to version $MIGRATION..."
+SECONDS=0
+
+if [ $SKIP = true ]; then
+  echo "Skipping migration. Only going to update db_versions."
+else
+  psql -d $DATABASE -f "$HOME/$DIRECTORY/$MIGRATION.sql"
+fi
+
+# Only update the db_versions table if it doesn't already have the version
+if [[ $(psql -d $DATABASE -t -c "SELECT db_version FROM db_versions WHERE db_version = $MIGRATION" | wc -l) -gt 1 ]]; then
+  echo "Database already migrated to version $MIGRATION"
+  exit 0
+fi
+
+psql -d $DATABASE -c "INSERT INTO db_versions (db_version) VALUES ($MIGRATION)"
+
+if [[ "$SECONDS" -gt 60 ]]; then
+  echo "Migration took $((SECONDS / 60)) minutes and $((SECONDS % 60)) seconds."
+else
+  echo "Migration took $SECONDS seconds."
+fi
